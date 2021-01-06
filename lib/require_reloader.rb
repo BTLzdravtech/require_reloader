@@ -58,6 +58,9 @@ module RequireReloader
             helper.remove_gem_module_if_defined(gem)
           end
           $".delete_if {|s| s.include?(gem)}
+          if defined?(Bootsnap) && !Bootsnap::LoadPathCache.loaded_features_index.nil?
+            Bootsnap::LoadPathCache.loaded_features_index.instance_variable_get(:@lfi).delete_if {|s| s.include?(gem)}
+          end
           require gem
           opts[:callback].call(gem) if opts[:callback]
         end
